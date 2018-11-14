@@ -1,5 +1,6 @@
 module PSDMats
 
+using LinearAlgebra
 using PDMats
 
 import Base: *, \
@@ -7,7 +8,7 @@ import Base: *, \
 export PSDMat
 
 # We're currently reusing this type name to minimize the number of changes from pdmat.jl
-CholType{T, S<:AbstractMatrix} = Base.LinAlg.CholeskyPivoted{T, S}
+CholType{T, S<:AbstractMatrix} = LinearAlgebra.CholeskyPivoted{T, S}
 
 #=
 The code below is just a slight modification of the PDMat code in PDMats.jl
@@ -38,7 +39,8 @@ function PSDMat(mat::AbstractMatrix, chol::CholType)
     PSDMat{eltype(mat),typeof(mat)}(d, mat, chol)
 end
 
-PSDMat(mat::Matrix) = PSDMat(mat, cholfact(mat, :U, Val{true}))
+PSDMat(mat::Matrix) = PSDMat(mat, cholesky(mat, Val(true); check=false))
+PSDMat(mat::Symmetric) = PSDMat(Matrix(mat))
 PSDMat(fac::CholType) = PSDMat(Matrix(fac), fac)
 
 ### Conversion
@@ -48,9 +50,8 @@ Base.convert(::Type{AbstractArray{T}}, a::PSDMat) where {T<:Real} = convert(PSDM
 ### Basics
 
 PDMats.dim(a::PSDMat) = a.dim
-PDMats.full(a::PSDMat) = copy(a.mat)
 Base.Matrix(a::PSDMat) = copy(a.mat)
-Base.LinAlg.diag(a::PSDMat) = diag(a.mat)
+LinearAlgebra.diag(a::PSDMat) = diag(a.mat)
 
 
 ### Arithmetics
@@ -68,23 +69,23 @@ end
 ### Algebra
 
 Base.inv(a::PSDMat) = PSDMat(inv(a.chol))
-Base.LinAlg.logdet(a::PSDMat) = logdet(a.chol)
-Base.LinAlg.eigmax(a::PSDMat) = eigmax(a.mat)
-Base.LinAlg.eigmin(a::PSDMat) = eigmin(a.mat)
+LinearAlgebra.logdet(a::PSDMat) = logdet(a.chol)
+LinearAlgebra.eigmax(a::PSDMat) = eigmax(a.mat)
+LinearAlgebra.eigmin(a::PSDMat) = eigmin(a.mat)
 
 
 ### whiten and unwhiten
 
 function PDMats.whiten!(r::StridedVecOrMat, a::PSDMat, x::StridedVecOrMat)
-    cf = a.chol[:U]
-    istriu(cf) ? Ac_ldiv_B!(cf, PDMats._rcopy!(r, x)) : A_ldiv_B!(cf, PDMats._rcopy!(r, x))
-    return r
+    cf = a.chol.U
+    v = PDMats._rcopy!(r, x)
+    istriu(cf) ? ldiv!(transpose(cf), v) : ldiv!(cf, v)
 end
 
 function PDMats.unwhiten!(r::StridedVecOrMat, a::PSDMat, x::StridedVecOrMat)
-    cf = a.chol[:U]
-    istriu(cf) ? Ac_mul_B!(cf, PDMats._rcopy!(r, x)) : A_mul_B!(cf, PDMats._rcopy!(r, x))
-    return r
+    cf = a.chol.U
+    v = PDMats._rcopy!(r, x)
+    istriu(cf) ? lmul!(transpose(cf), v) : lmul!(cf, v)
 end
 
 
@@ -107,34 +108,30 @@ PDMats.invquad!(r::AbstractArray, a::PSDMat, x::StridedMatrix) = PDMats.colwise_
 
 
 ### tri products
-# NOTE: This code is from 0.8.0 as the newer code is not 0.6/0.7 compliant
-# even with Compat.
-function PDMats.X_A_Xt(a::PSDMat, x::StridedMatrix)
+
+function X_A_Xt(a::PSDMat, x::StridedMatrix)
     z = copy(x)
-    cf = a.chol[:U]
-    istriu(cf) ? A_mul_Bc!(z, cf) : A_mul_B!(z, cf)
-    A_mul_Bt(z, z)
+    cf = a.chol.UL
+    rmul!(z, istriu(cf) ? transpose(cf) : cf)
+    z * transpose(z)
 end
 
-function PDMats.Xt_A_X(a::PSDMat, x::StridedMatrix)
-    z = copy(x)
-    cf = a.chol[:U]
-    istriu(cf) ? A_mul_B!(cf, z) : Ac_mul_B!(cf, z)
-    At_mul_B(z, z)
+function Xt_A_X(a::PSDMat, x::StridedMatrix)
+    cf = a.chol.UL
+    z = lmul!(istriu(cf) ? cf : transpose(cf), copy(x))
+    transpose(z) * z
 end
 
-function PDMats.X_invA_Xt(a::PSDMat, x::StridedMatrix)
-    z = copy(x)
-    cf = a.chol[:U]
-    istriu(cf) ? A_rdiv_B!(z, cf) : A_rdiv_Bc!(z, cf)
-    A_mul_Bt(z, z)
+function X_invA_Xt(a::PSDMat, x::StridedMatrix)
+    cf = a.chol.UL
+    z = rdiv!(copy(x), istriu(cf) ? cf : transpose(cf))
+    z * transpose(z)
 end
 
-function PDMats.Xt_invA_X(a::PSDMat, x::StridedMatrix)
-    z = copy(x)
-    cf = a.chol[:U]
-    istriu(cf) ? Ac_ldiv_B!(cf, z) : A_ldiv_B!(cf, z)
-    At_mul_B(z, z)
+function Xt_invA_X(a::PSDMat, x::StridedMatrix)
+    cf = a.chol.UL
+    z = ldiv!(istriu(cf) ? transpose(cf) : cf, copy(x))
+    transpose(z) * z
 end
 
 end
