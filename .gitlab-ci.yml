@@ -59,20 +59,6 @@ stages:
     - docker-ci
   <<: *test_docker_0_6
 
-"1.0 (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  <<: *test_shell_1_0
-
-"Nightly (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  <<: *test_shell_nightly
-
 "Coverage":
   stage: coverage
   image: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
