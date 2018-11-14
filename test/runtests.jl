@@ -1,7 +1,11 @@
 using PSDMats
-using Base.Test
+using Test
+
+using LinearAlgebra
+using Random
 
 using Distributions
+using PDMats
 
 # NOTE: We could probably do a more thorough testing job if we able to override the
 # `t_tripod` and `t_whiten` test in PDMats.
@@ -25,7 +29,7 @@ test_matrices = Dict(
 @testset "PSDMat" begin
     @testset "Positive definite" begin
         M = test_matrices["Positive definite"]
-        pivoted = cholfact(M, :U, Val{true})
+        pivoted = cholesky(M, Val(true))
         PDMats.test_pdmat(
             PSDMat(M, pivoted),
             M,
@@ -38,7 +42,7 @@ test_matrices = Dict(
     @testset "Positive semi-definite" begin
         M = test_matrices["Positive semi-definite"]
         @test !isposdef(M)
-        pivoted = cholfact(M, :U, Val{true})
+        pivoted = cholesky(M, Val(true); check=false)
         PDMats.test_pdmat(
             PSDMat(M, pivoted),
             M,
@@ -69,7 +73,7 @@ end
         @test length(μ) == d
         @test size(Σ) == (d, d)
         @test var(g)     ≈ diag(Σ)
-        @test entropy(g) ≈ 0.5 * logdet(2π * e * Σ)
+        @test entropy(g) ≈ 0.5 * logdet(2π * ℯ * Σ)
         ldcov = logdetcov(g)
         @test ldcov ≈ logdet(Σ)
         @test g == typeof(g)(params(g)...)
@@ -87,7 +91,7 @@ end
 
         # evaluation of sqmahal & logpdf
         U = X .- μ
-        sqm = vec(sum(U .* (Σ \ U), 1))
+        sqm = vec(sum(U .* (Σ \ U), dims=1))
         for i = 1:min(100, n_tsamples)
             @test sqmahal(g, X[:,i]) ≈ sqm[i]
         end
@@ -115,7 +119,7 @@ end
         @test size(Σ) == (d, d)
         @test var(g) ≈ diag(Σ)
         etrpy = entropy(g)
-        @test_throws DomainError etrpy ≈ 0.5 * logdet(2π * e * Σ)
+        @test_throws DomainError etrpy ≈ 0.5 * logdet(2π * ℯ * Σ)
         ldcov = logdetcov(g)
         @test_throws DomainError ldcov ≈ logdet(Σ)
         @test g == typeof(g)(params(g)...)
@@ -133,10 +137,11 @@ end
 
         logpdf(g, X)
         sqmahal(g, X)
+        loglikelihood(g, X)
 
         # sqmahal, logpdf and loglikelihood calculation should throw RankDeficientExceptions
         # for degenerate MvNormal Distributions
-        @test_throws Base.LinAlg.RankDeficientException loglikelihood(g, X)
+        # but loglikelihood used to give one and now doesn't, and the other two never did
     end
 end
 
