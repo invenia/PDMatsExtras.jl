@@ -21,9 +21,9 @@ stages:
   after_script:
     - ./julia-ci clean
 
-.test_shell_0_6: &test_shell_0_6
+.test_shell_0_7: &test_shell_0_7
   variables:
-    JULIA_VERSION: "0.6"
+    JULIA_VERSION: "0.7"
   <<: *test_shell
 
 .test_shell_1_0: &test_shell_1_0
@@ -52,12 +52,27 @@ stages:
   image: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
   <<: *test_docker
 
-"0.6 (Linux, 64-bit, Docker)":
+"0.7 (Linux, 64-bit)":
   tags:
     - linux
     - 64-bit
-    - docker-ci
-  <<: *test_docker_0_6
+    - shell-ci
+  <<: *test_shell_0_7
+
+"1.0 (Linux, 64-bit)":
+  tags:
+    - linux
+    - 64-bit
+    - shell-ci
+  <<: *test_shell_1_0
+
+"Nightly (Linux, 64-bit)":
+  tags:
+    - linux
+    - 64-bit
+    - shell-ci
+  <<: *test_shell_nightly
+
 
 "Coverage":
   stage: coverage
@@ -89,7 +104,7 @@ stages:
     - docs
     - tags  # special keyword for all tags
   variables:
-    JULIA_VERSION: "0.6"
+    JULIA_VERSION: "1.0"
   before_script:
     - curl -s -o julia-ci https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/julia-ci
     - chmod +x julia-ci
