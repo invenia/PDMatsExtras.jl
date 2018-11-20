@@ -1,7 +1,6 @@
 stages:
   - test
   - coverage
-  - docs
 
 .test_shell: &test_shell
   artifacts:
@@ -91,26 +90,5 @@ stages:
     - chmod +x julia-ci
   script:
     - ./julia-ci publish-coverage combined_coverage
-  after_script:
-    - ./julia-ci clean
-
-"Documentation":
-  stage: docs
-  tags:
-    - docs
-  only:
-    - master
-    - develop
-    - docs
-    - tags  # special keyword for all tags
-  variables:
-    JULIA_VERSION: "1.0"
-  before_script:
-    - curl -s -o julia-ci https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/julia-ci
-    - chmod +x julia-ci
-    - ./julia-ci install $JULIA_VERSION
-  script:
-    - source julia-ci export
-    - ./julia-ci docs
   after_script:
     - ./julia-ci clean
