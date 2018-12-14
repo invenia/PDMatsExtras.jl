@@ -2,93 +2,37 @@ stages:
   - test
   - coverage
 
-.test_shell: &test_shell
-  artifacts:
-    name: "$CI_JOB_NAME coverage"
-    expire_in: 1 week
-    paths:
-      - "$CI_JOB_NAME coverage/"
-  before_script:
-    - curl -s -o julia-ci https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/julia-ci
-    - chmod +x julia-ci
-    - ./julia-ci install $JULIA_VERSION
-  script:
-    - source julia-ci export
-    # - export PYTHON=""  # Configure PyCall to use the Conda.jl package's Python
-    - ./julia-ci test
-    - ./julia-ci coverage
-  after_script:
-    - ./julia-ci clean
+include:
+  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/gitlab-templates/test_templates.yml
+  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/gitlab-templates/coverage.yml
 
-.test_shell_0_7: &test_shell_0_7
+variables:
+  JULIA_IMAGE: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
+
+
+.test_shell_0_7:
   variables:
     JULIA_VERSION: "0.7"
-  <<: *test_shell
+  extends: .test_shell
 
-.test_shell_1_0: &test_shell_1_0
-  variables:
-    JULIA_VERSION: "1.0"
-  <<: *test_shell
-
-.test_shell_nightly: &test_shell_nightly
-  variables:
-    JULIA_VERSION: "nightly"
-  allow_failure: true
-  <<: *test_shell
-
-.test_docker: &test_docker
-  artifacts:
-    name: "$CI_JOB_NAME coverage"
-    expire_in: 1 week
-    paths:
-      - "$CI_JOB_NAME coverage"
-  script:
-    # - export PYTHON=""  # Configure PyCall to use the Conda.jl package's Python
-    - julia -e "Pkg.clone(pwd()); Pkg.build(\"$PKG_NAME\"); Pkg.test(\"$PKG_NAME\"; coverage=true)"
-    - julia-coverage "$PKG_NAME"
-
-.test_docker_0_6: &test_docker_0_6
-  image: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
-  <<: *test_docker
 
 "0.7 (Linux, 64-bit)":
   tags:
     - linux
     - 64-bit
     - shell-ci
-  <<: *test_shell_0_7
+  extends: .test_shell_0_7
 
 "1.0 (Linux, 64-bit)":
   tags:
     - linux
     - 64-bit
     - shell-ci
-  <<: *test_shell_1_0
+  extends: .test_shell_1_0
 
 "Nightly (Linux, 64-bit)":
   tags:
     - linux
     - 64-bit
     - shell-ci
-  <<: *test_shell_nightly
-
-
-"Coverage":
-  stage: coverage
-  image: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
-  coverage: /Test Coverage (\d+\.\d+%)/
-  artifacts:
-    name: combined_coverage
-    expire_in: 1 week
-    paths:
-      - combined_coverage/
-  tags:
-    - linux
-    - docker-ci
-  before_script:
-    - curl -s -o julia-ci https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/julia-ci
-    - chmod +x julia-ci
-  script:
-    - ./julia-ci publish-coverage combined_coverage
-  after_script:
-    - ./julia-ci clean
+  extends: .test_shell_nightly
