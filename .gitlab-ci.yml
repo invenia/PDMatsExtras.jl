@@ -1,27 +1,15 @@
 stages:
+  - setup
   - test
-  - coverage
+  - teardown
 
 include:
-  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/gitlab-templates/test_templates.yml
-  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/gitlab-templates/coverage.yml
+  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/templates/hidden-jobs.yml
+  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/templates/coverage.yml
 
 variables:
-  JULIA_IMAGE: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:0.6
+  JULIA_IMAGE: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:1.0
 
-
-.test_shell_0_7:
-  variables:
-    JULIA_VERSION: "0.7"
-  extends: .test_shell
-
-
-"0.7 (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  extends: .test_shell_0_7
 
 "1.0 (Linux, 64-bit)":
   tags:
@@ -29,6 +17,13 @@ variables:
     - 64-bit
     - shell-ci
   extends: .test_shell_1_0
+
+"1.1 (Linux, 64-bit)":
+  tags:
+    - linux
+    - 64-bit
+    - shell-ci
+  extends: .test_shell_1_1
 
 "Nightly (Linux, 64-bit)":
   tags:
