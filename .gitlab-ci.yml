@@ -1,33 +1,11 @@
-stages:
-  - setup
-  - test
-  - teardown
-
+---
 include:
-  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/templates/hidden-jobs.yml
-  - https://gitlab.invenia.ca/infrastructure/gitlab-ci-helper/raw/master/templates/coverage.yml
+  - project: infrastructure/gitlab-ci-helper
+    file: /templates/julia.yml
 
 variables:
-  JULIA_IMAGE: 468665244580.dkr.ecr.us-east-1.amazonaws.com/julia-gitlab-ci:1.0
-
-
-"1.0 (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  extends: .test_shell_1_0
-
-"1.1 (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  extends: .test_shell_1_1
-
-"Nightly (Linux, 64-bit)":
-  tags:
-    - linux
-    - 64-bit
-    - shell-ci
-  extends: .test_shell_nightly
+  # Only include Linux 64-bit jobs in the job matrix
+  os: "linux"
+  platform: "64-bit"
+  # Exclude Documentation job from teardown stage because package does not have docs
+  exclude: "\"Documentation\""
