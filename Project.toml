@@ -1,7 +1,7 @@
 name = "PSDMats"
 uuid = "d8364848-a99d-5bfe-b7b0-b4f035b9733f"
 authors = ["Invenia Technical Computing"]
-version = "1.0.0"
+version = "1.0.1"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
