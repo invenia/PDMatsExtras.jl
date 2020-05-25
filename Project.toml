@@ -1,19 +1,21 @@
 name = "PSDMats"
 uuid = "d8364848-a99d-5bfe-b7b0-b4f035b9733f"
 authors = ["Invenia Technical Computing"]
-version = "1.0.1"
+version = "1.0.2"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
 
 [compat]
+PDMats = "0.9, 0.10"
 julia = "1"
 
 [extras]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SuiteSparse = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Distributions", "Random", "Test"]
+test = ["Distributions", "Random", "SuiteSparse", "Test"]
