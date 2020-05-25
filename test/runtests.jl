@@ -7,6 +7,8 @@ using Random
 using Distributions
 using PDMats
 
+include("testutils.jl")
+
 # NOTE: We could probably do a more thorough testing job if we able to override the
 # `t_tripod` and `t_whiten` test in PDMats.
 test_matrices = Dict(
@@ -30,7 +32,7 @@ test_matrices = Dict(
     @testset "Positive definite" begin
         M = test_matrices["Positive definite"]
         pivoted = cholesky(M, Val(true))
-        PDMats.test_pdmat(
+        test_pdmat(
             PSDMat(M, pivoted),
             M,
             cmat_eq=false,
@@ -43,7 +45,7 @@ test_matrices = Dict(
         M = test_matrices["Positive semi-definite"]
         @test !isposdef(M)
         pivoted = cholesky(M, Val(true); check=false)
-        PDMats.test_pdmat(
+        test_pdmat(
             PSDMat(M, pivoted),
             M,
             cmat_eq=true,
