@@ -51,6 +51,8 @@ Base.convert(::Type{AbstractArray{T}}, a::PSDMat) where {T<:Real} = convert(PSDM
 
 PDMats.dim(a::PSDMat) = a.dim
 Base.Matrix(a::PSDMat) = copy(a.mat)
+Base.getindex(a::PSDMat, i::Int) = getindex(a.mat, i)
+Base.getindex(a::PSDMat, I::Vararg{Int, N}) where N = getindex(a.mat, I...)
 LinearAlgebra.diag(a::PSDMat) = diag(a.mat)
 
 
