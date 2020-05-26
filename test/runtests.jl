@@ -28,34 +28,55 @@ test_matrices = Dict(
 
 @testset "PSDMats.jl" begin
 
+# We write the tests like this to match the style of `testutils.jl`.
+# We define this here, rather than in `testutils.jl` because we're not allowed to change the
+# contents of that file, which should always match the PDMats v0.10 version of that file
+# https://github.com/JuliaStats/PDMats.jl/blob/v0.10.0/test/testutils.jl
+function pdtest_kron(C::AbstractPDMat, Cmat::Matrix, verbose::Int)
+    Pd = PDMat(C + I)
+    Psd = PSDMat(C + I)
+    M = rand(eltype(C), size(Cmat))
+    v = vec(M)
+    for x in (Pd, Psd, M, v)
+        _pdt(verbose, "kron with $(typeof(x))")
+        @test kron(C, x) ≈ kron(Cmat, x)
+        @test kron(x, C) ≈ kron(x, Cmat)
+    end
+end
+
 @testset "PSDMat" begin
+    verbose = 1
     @testset "Positive definite" begin
         M = test_matrices["Positive definite"]
         pivoted = cholesky(M, Val(true))
+        C = PSDMat(M, pivoted)
         test_pdmat(
-            PSDMat(M, pivoted),
+            C,
             M,
             cmat_eq=false,
-            verbose=1,
+            verbose=verbose,
             t_triprod=false,    # fails because of some floating point issues.
             t_whiten=false,     # Whiten doesn't produce an identity matrix with the upper triangular matrix
         )
+        pdtest_kron(C, C.mat, verbose)
     end
     @testset "Positive semi-definite" begin
         M = test_matrices["Positive semi-definite"]
         @test !isposdef(M)
         pivoted = cholesky(M, Val(true); check=false)
+        C = PSDMat(M, pivoted)
         test_pdmat(
-            PSDMat(M, pivoted),
+            C,
             M,
             cmat_eq=true,
-            verbose=1,
+            verbose=verbose,
             t_logdet=false,     # We get an expected domain error
             t_rdiv=false,       # We get an expected RankDeficientExceptions
             t_quad=false,       # We get an expected RankDeficientExceptions
             t_triprod=false,    # fails because of expected RankDeficientExceptions
             t_whiten=false,     # Test calls chol_lower on the matrix which throws a PosDefException
         )
+        pdtest_kron(C, C.mat, verbose)
     end
 end
 

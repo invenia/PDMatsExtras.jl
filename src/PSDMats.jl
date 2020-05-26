@@ -51,6 +51,8 @@ Base.convert(::Type{AbstractArray{T}}, a::PSDMat) where {T<:Real} = convert(PSDM
 
 PDMats.dim(a::PSDMat) = a.dim
 Base.Matrix(a::PSDMat) = copy(a.mat)
+Base.getindex(a::PSDMat, i::Int) = getindex(a.mat, i)
+Base.getindex(a::PSDMat, I::Vararg{Int, N}) where N = getindex(a.mat, I...)
 LinearAlgebra.diag(a::PSDMat) = diag(a.mat)
 
 
@@ -72,6 +74,9 @@ Base.inv(a::PSDMat) = PSDMat(inv(a.chol))
 LinearAlgebra.logdet(a::PSDMat) = logdet(a.chol)
 LinearAlgebra.eigmax(a::PSDMat) = eigmax(a.mat)
 LinearAlgebra.eigmin(a::PSDMat) = eigmin(a.mat)
+LinearAlgebra.kron(a::PSDMat, b::PSDMat) = PSDMat(kron(a.mat, b.mat))
+LinearAlgebra.kron(a::AbstractPDMat, b::PSDMat) = PSDMat(kron(Matrix(a), b.mat))
+LinearAlgebra.kron(a::PSDMat, b::AbstractPDMat) = PSDMat(kron(a.mat, Matrix(b)))
 
 
 ### whiten and unwhiten
