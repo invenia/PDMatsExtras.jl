@@ -72,6 +72,9 @@ Base.inv(a::PSDMat) = PSDMat(inv(a.chol))
 LinearAlgebra.logdet(a::PSDMat) = logdet(a.chol)
 LinearAlgebra.eigmax(a::PSDMat) = eigmax(a.mat)
 LinearAlgebra.eigmin(a::PSDMat) = eigmin(a.mat)
+LinearAlgebra.kron(a::PSDMat, b::PSDMat) = PSDMat(kron(a.mat, b.mat))
+LinearAlgebra.kron(a::AbstractPDMat, b::PSDMat) = PSDMat(kron(Matrix(a), b.mat))
+LinearAlgebra.kron(a::PSDMat, b::AbstractPDMat) = PSDMat(kron(a.mat, Matrix(b)))
 
 
 ### whiten and unwhiten
