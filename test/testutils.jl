@@ -24,6 +24,7 @@ function test_pdmat(C::AbstractPDMat, Cmat::Matrix;
                     t_rdiv::Bool=true,          # whether to test right division (solve)
                     t_quad::Bool=true,          # whether to test quad & invquad
                     t_triprod::Bool=true,       # whether to test X_A_Xt, Xt_A_X, X_invA_Xt, and Xt_invA_X
+                    t_kron::Bool=true,          # whether to test kron
                     t_whiten::Bool=true         # whether to test whiten and unwhiten
                     )
 
@@ -49,6 +50,7 @@ function test_pdmat(C::AbstractPDMat, Cmat::Matrix;
     t_rdiv && pdtest_rdiv(C, Imat, X, verbose)
     t_quad && pdtest_quad(C, Cmat, Imat, X, verbose)
     t_triprod && pdtest_triprod(C, Cmat, Imat, X, verbose)
+    t_kron && pdtest_kron(C, Cmat, verbose)
 
     t_whiten && pdtest_whiten(C, Cmat, verbose)
 
@@ -242,6 +244,19 @@ function pdtest_triprod(C::AbstractPDMat, Cmat::Matrix, Imat::Matrix, X::Matrix,
 
     _pdt(verbose, "Xt_invA_X")
     @test Xt_invA_X(C, X) ≈ Xt * Imat * X
+end
+
+
+function pdtest_kron(C::AbstractPDMat, Cmat::Matrix, verbose::Int)
+    Pd = PDMat(C + I)
+    Psd = PSDMat(C + I)
+    M = rand(eltype(C), size(Cmat))
+    v = vec(M)
+    for x in (Pd, Psd, M, v)
+        _pdt(verbose, "kron with $(typeof(x))")
+        @test kron(C, x) ≈ kron(Cmat, x)
+        @test kron(x, C) ≈ kron(x, Cmat)
+    end
 end
 
 
