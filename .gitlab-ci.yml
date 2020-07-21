@@ -1,8 +1,8 @@
 ---
 include:
-  - project: infrastructure/gitlab-ci-helper
+  - project: invenia/gitlab-ci-helper
     file: /templates/julia.yml
-  - project: infrastructure/gitlab-ci-helper
+  - project: invenia/gitlab-ci-helper
     file: /templates/common-functions.yml
 
 .setup: &setup
