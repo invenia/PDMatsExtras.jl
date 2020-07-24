@@ -2,12 +2,10 @@
 include:
   - project: invenia/gitlab-ci-helper
     file: /templates/julia.yml
-  - project: invenia/gitlab-ci-helper
-    file: /templates/common-functions.yml
 
 .setup: &setup
   |
-  echo "$common_functions" > common && source common
+  echo "$ci_init" > ci_init && source ci_init && rm ci_init
 
 variables:
   # Only include Linux 64-bit jobs in the job matrix
