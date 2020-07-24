@@ -2,12 +2,10 @@
 include:
   - project: invenia/gitlab-ci-helper
     file: /templates/julia.yml
-  - project: invenia/gitlab-ci-helper
-    file: /templates/common-functions.yml
 
 .setup: &setup
   |
-  echo "$common_functions" > common && source common
+  echo "$ci_init" > ci_init && source ci_init && rm ci_init
 
 variables:
   # Only include Linux 64-bit jobs in the job matrix
@@ -27,7 +25,7 @@ test_util_diff:
     # file into this repository to continue using it. This CI job ensures that we are aware
     # of any changes made to the file, for more information see the link:
     # https://gitlab.invenia.ca/invenia/PSDMats.jl/-/merge_requests/8#note_150819
-    - 'latest=$(curl -s https://api.github.com/repos/JuliaStats/PDMats.jl/releases/latest | jq -r .tag_name)'
+    - 'latest=$(curl -sSL https://api.github.com/repos/JuliaStats/PDMats.jl/releases/latest | jq -r .tag_name)'
     - 'curl -LO https://raw.githubusercontent.com/JuliaStats/PDMats.jl/$latest/test/testutils.jl'
     - 'diff testutils.jl <(tail -n +2 test/testutils.jl) || exit 1'
   after_script:
