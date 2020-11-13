@@ -1,7 +1,7 @@
 name = "PDMatsExtras"
-uuid = "d8364848-a99d-5bfe-b7b0-b4f035b9733f"
+uuid = "2c7acb1b-7338-470f-b38f-951d2bcb9193"
 authors = ["Invenia Technical Computing"]
-version = "1.0.3"
+version = "2.0.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
