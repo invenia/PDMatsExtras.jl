@@ -1,4 +1,4 @@
-module PSDMats
+module PDMatsExtras
 
 using LinearAlgebra
 using PDMats

@@ -1,4 +1,4 @@
-using PSDMats
+using PDMatsExtras
 using Test
 
 using LinearAlgebra
@@ -26,7 +26,7 @@ test_matrices = Dict(
     ]
 )
 
-@testset "PSDMats.jl" begin
+@testset "PDMatsExtras.jl" begin
 
 # We write the tests like this to match the style of `testutils.jl`.
 # We define this here, rather than in `testutils.jl` because we're not allowed to change the
