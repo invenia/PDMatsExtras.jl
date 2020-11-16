@@ -1,11 +1,13 @@
 using PDMatsExtras
-using Test
-
-using LinearAlgebra
-using Random
-
+using ChainRulesCore
 using Distributions
+using FiniteDifferences
+using LinearAlgebra
 using PDMats
+using Random
+using Test
+using Zygote
+
 
 @testset "PDMatsExtras.jl" begin
     include("testutils.jl")

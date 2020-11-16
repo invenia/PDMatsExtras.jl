@@ -60,7 +60,7 @@ function validate_woodbury_arguments(A, D, S)
     end
 end
 
-Zygote.@nograd validate_woodbury_arguments
+@non_differentiable validate_woodbury_arguments(A, D, S)
 
 function LinearAlgebra.logdet(W::WoodburyPDMat)
     C_S = cholesky(W.S)

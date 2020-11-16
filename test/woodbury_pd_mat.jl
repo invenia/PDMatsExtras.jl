@@ -25,7 +25,7 @@
 
     @testset "logdet" begin
         @test logdet(W) ≈ logdet(W_dense)
-        test_ad(randn(), A, D, S) do A, D, S)
+        test_ad(randn(), A, D, S) do A, D, S
             logdet(WoodburyPDMat(A, D, S))
         end
     end
