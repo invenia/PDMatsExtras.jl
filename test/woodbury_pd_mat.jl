@@ -35,7 +35,7 @@
 
         test_ad(randn(), A, D, S, x) do A, D, S, x
             W = WoodburyPDMat(A, D, S)
-            return HeavyTailedPredictors.invquad(W, x)
+            return invquad(W, x)
         end
     end
 
@@ -59,7 +59,7 @@
 
         test_ad(randn(), α, m, A, D, S, x) do α, m, A, D, S, x
             W = WoodburyPDMat(A, D, S)
-            return logpdf(Distributions.GenericMvTDist(α, m, W, false), x)
+            return logpdf(Distributions.GenericMvTDist(α, m, W), x)
         end
     end
 end

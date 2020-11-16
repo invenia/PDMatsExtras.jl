@@ -8,7 +8,7 @@ using Random
 using Test
 using Zygote
 
-
+Random.seed!(1)
 @testset "PDMatsExtras.jl" begin
     include("testutils.jl")
     include("test_ad.jl")

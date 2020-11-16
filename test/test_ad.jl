@@ -1,4 +1,4 @@
-function test_ad(test_function, Δoutput, inputs...; atol=1e-7, rtol=1e-7)
+function test_ad(test_function, Δoutput, inputs...; atol=1e-6, rtol=1e-6)
 
     # Verify that the forwards-pass produces the correct answer.
     output, pb = Zygote.pullback(test_function, inputs...)
