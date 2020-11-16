@@ -55,3 +55,37 @@ julia> PSDMat(cholesky(X, Val(true); check=false))
   2.0  -1.0       1.0   1.0
   4.0  -4.0       1.0   6.0
 ```
+
+## WoodburyPDMat
+It is a positive definite Woodbury matrix.
+This is a special case of the Symmetric Woodbury Matrix (see [WoodburyMatrices.jl's](https://github.com/timholy/WoodburyMatrices.jl/) `SymWoodbury` type) which is given by `A*D*A' + S` for `S` and `D` being diagonal,
+which has the additional requirement that the diagonal matrices are also non-negative.
+
+```julia
+julia> using LinearAlgebra, PDMatsExtras
+
+julia> A = Float64[
+         2.0  2.0  -8.0   5.0  -1.0   2.0   6.0
+         2.0  7.0  -1.0  -5.0  -4.0   8.0   7.0
+        -2.0  9.0  -9.0  -5.0   9.0  -5.0  -3.0
+         3.0  4.0  -6.0  -4.0   3.0  -3.0  -3.0
+       ];
+
+julia> D = Diagonal(Float64[1, 2, 3, 2, 2, 1, 5]);
+
+julia> S = Diagonal(Float64[4, 2, 3, 6]);
+
+julia> W = WoodburyPDMat(A, D, S)
+4×4 WoodburyPDMat{Float64,Array{Float64,2},Diagonal{Float64,Array{Float64,1}},Diagonal{Float64,Array{Float64,1}}}:
+ 444.0  240.0   80.0   24.0
+ 240.0  498.0  -18.0  -33.0
+  80.0  -18.0  694.0  382.0
+  24.0  -33.0  382.0  259.0
+
+julia> A*D*A' + S
+4×4 Array{Float64,2}:
+ 444.0  240.0   80.0   24.0
+ 240.0  498.0  -18.0  -33.0
+  80.0  -18.0  694.0  382.0
+  24.0  -33.0  382.0  259.0
+```
