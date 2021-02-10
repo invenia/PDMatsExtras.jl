@@ -84,3 +84,7 @@ end
 function PDMats.unwhiten!(r::DenseVecOrMat, W::WoodburyPDMat{<:Real}, x::DenseVecOrMat)
     return unwhiten!(r, PDMat(Symmetric(Matrix(W))), x)
 end
+
+# NOTE: the parameterisation to scale up the Woodbury matrix is not unique. Here we
+# implement one way to scale it.
+*(a::WoodburyPDMat, c::T) where T<:Real = WoodburyPDMat(a.A, a.D * c, a.S * c)
