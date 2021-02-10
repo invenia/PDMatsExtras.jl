@@ -42,7 +42,7 @@
     @testset "*" begin
         c = 2.0
         @test c * W == W * c
-        @test Matrix(c * W_dense) ≈ Matrix(c * W) atol=1e-6
+        @test c * W_dense ≈ c * W atol=1e-6
     end
 
     @testset "MvNormal logpdf" begin
