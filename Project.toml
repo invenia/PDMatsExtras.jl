@@ -1,7 +1,7 @@
 name = "PDMatsExtras"
 uuid = "2c7acb1b-7338-470f-b38f-951d2bcb9193"
 authors = ["Invenia Technical Computing"]
-version = "2.1.1"
+version = "2.2.0"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
