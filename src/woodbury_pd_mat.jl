@@ -87,4 +87,4 @@ end
 
 # NOTE: the parameterisation to scale up the Woodbury matrix is not unique. Here we
 # implement one way to scale it.
-*(a::WoodburyPDMat, c::T) where T<:Real = WoodburyPDMat(a.A, a.D * c, a.S * c)
+*(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
