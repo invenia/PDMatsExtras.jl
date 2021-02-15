@@ -39,6 +39,12 @@
         end
     end
 
+    @testset "*" begin
+        c = 2.0
+        @test c * W == W * c
+        @test c * W_dense ≈ c * W atol=1e-6
+    end
+
     @testset "MvNormal logpdf" begin
         m = randn(size(A, 1))
         @test logpdf(MvNormal(m, W), x) ≈ logpdf(MvNormal(m, Symmetric(Matrix(W))), x)
