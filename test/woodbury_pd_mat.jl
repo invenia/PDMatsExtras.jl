@@ -43,10 +43,6 @@
         c = 2.0
         @test c * W == W * c
         @test c * W_dense ≈ c * W atol=1e-6
-
-        c = Diagonal(2.0 * ones(4))
-        @test c * W == W * c
-        @test c * W_dense ≈ c * W_dense atol=1e-6
     end
 
     @testset "MvNormal logpdf" begin
