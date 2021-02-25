@@ -88,3 +88,6 @@ end
 # NOTE: the parameterisation to scale up the Woodbury matrix is not unique. Here we
 # implement one way to scale it.
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
+*(c::Real, a::WoodburyPDMat) = a * c
+*(a::WoodburyPDMat, c::Diagonal{T}) where {T<:Real} = WoodburyPDMat(sqrt(c) * a.A, a.D, a.S * c)
+*(c::Diagonal{T}, a::WoodburyPDMat) where {T<:Real} = a * c
