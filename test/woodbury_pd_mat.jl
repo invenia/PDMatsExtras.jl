@@ -43,6 +43,20 @@
         c = 2.0
         @test c * W == W * c
         @test c * W_dense ≈ c * W atol=1e-6
+        @test (c * W) isa WoodburyPDMat
+
+        c = Diagonal(2.0 * ones(4,))
+        @test c * W == W * c
+        @test c * W_dense ≈ c * W atol=1e-6
+        @test (c * W) isa WoodburyPDMat
+
+        c1 = Diagonal(2.0 * ones(4,))
+        c2 = Diagonal(3.0 * ones(4,))
+
+        @test c2 * W * c1 == c1 * W * c2
+        @test c1 * W * c2 ≈ c1 * W_dense * c2
+        @test (c1 * W * c2) isa WoodburyPDMat
+
     end
 
     @testset "MvNormal logpdf" begin
