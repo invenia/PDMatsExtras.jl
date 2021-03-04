@@ -52,10 +52,15 @@
 
         c1 = Diagonal(2.0 * ones(4,))
         c2 = Diagonal(3.0 * ones(4,))
+        c_neg = Diagonal([1,2,-2,3])
 
         @test c2 * W * c1 == c1 * W * c2
         @test c1 * W * c2 ≈ c1 * W_dense * c2
         @test (c1 * W * c2) isa WoodburyPDMat
+
+        @test_throws(ArgumentError, c_neg * W)
+        @test_throws(ArgumentError, c_neg * W * c2)
+        @test_throws(ArgumentError, c1 * W * c_neg)
 
     end
 
