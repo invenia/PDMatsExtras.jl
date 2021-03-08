@@ -88,3 +88,14 @@ end
 # NOTE: the parameterisation to scale up the Woodbury matrix is not unique. Here we
 # implement one way to scale it.
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
+*(c::Real, a::WoodburyPDMat) = a * c
+function *(a::WoodburyPDMat, c::Diagonal{T}) where {T<:Real}
+    isposdef(c) || throw(ArgumentError("c must be positive definite"))
+    WoodburyPDMat(sqrt(c) * a.A, a.D, a.S * c)
+end
+*(c::Diagonal{T}, a::WoodburyPDMat) where {T<:Real} = a * c
+function *(c1::Diagonal{T}, a::WoodburyPDMat, c2::Diagonal{T}) where {T<:Real}
+    isposdef(c1) || throw(ArgumentError("c1 must be positive definite"))
+    isposdef(c2) || throw(ArgumentError("c2 must be positive definite"))
+    WoodburyPDMat(sqrt(c1) * sqrt(c2) * a.A, a.D, c1 * a.S * c2)
+end
