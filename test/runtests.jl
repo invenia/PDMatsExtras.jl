@@ -4,6 +4,7 @@ using Distributions
 using FiniteDifferences
 using LinearAlgebra
 using PDMats
+using SparseArrays: sparse
 using Random
 using Test
 using Zygote
