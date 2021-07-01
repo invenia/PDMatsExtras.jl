@@ -1,21 +1,3 @@
-
-# NOTE: We could probably do a more thorough testing job if we able to override the
-# `t_tripod` and `t_whiten` test in PDMats.
-test_matrices = Dict(
-    "Positive definite" => [
-        0.796911  0.602112  0.766136  0.247788
-        0.602112  0.480312  0.605538  0.218218
-        0.766136  0.605538  1.28666   0.290052
-        0.247788  0.218218  0.290052  0.130588
-    ],
-    "Positive semi-definite" => [
-        10.8145   -9.27226   1.67126   4.02515
-        -9.27226   8.08443  -1.48168  -4.27258
-        1.67126  -1.48168   1.31866   1.43293
-        4.02515  -4.27258   1.43293   6.76801
-    ]
-)
-
 # We write the tests like this to match the style of `testutils.jl`.
 # We define this here, rather than in `testutils.jl` because we're not allowed to change the
 # contents of that file, which should always match the PDMats v0.10 version of that file
@@ -35,7 +17,7 @@ end
 @testset "PSDMat" begin
     verbose = 1
     @testset "Positive definite" begin
-        M = test_matrices["Positive definite"]
+        M = TEST_MATRICES["Positive definite"]
         pivoted = cholesky(M, Val(true))
         C = PSDMat(M, pivoted)
         test_pdmat(
@@ -49,7 +31,7 @@ end
         pdtest_kron(C, C.mat, verbose)
     end
     @testset "Positive semi-definite" begin
-        M = test_matrices["Positive semi-definite"]
+        M = TEST_MATRICES["Positive semi-definite"]
         @test !isposdef(M)
         pivoted = cholesky(M, Val(true); check=false)
         C = PSDMat(M, pivoted)
@@ -74,7 +56,7 @@ end
     n_tsamples = 10^6
 
     @testset "Positive definite" begin
-        g = MvNormal(means, PSDMat(test_matrices["Positive definite"]))
+        g = MvNormal(means, PSDMat(TEST_MATRICES["Positive definite"]))
         d = length(g)
         μ = mean(g)
         Σ = cov(g)
@@ -119,7 +101,7 @@ end
     end
 
     @testset "Positive semi-definite" begin
-        g = MvNormal(means, PSDMat(test_matrices["Positive semi-definite"]))
+        g = MvNormal(means, PSDMat(TEST_MATRICES["Positive semi-definite"]))
         d = length(g)
         μ = mean(g)
         Σ = cov(g)
