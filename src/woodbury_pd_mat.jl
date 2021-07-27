@@ -62,8 +62,6 @@ function validate_woodbury_arguments(A, D, S)
     end
 end
 
-@non_differentiable validate_woodbury_arguments(A, D, S)
-
 function LinearAlgebra.logdet(W::WoodburyPDMat)
     C_S = cholesky(W.S)
     B = C_S.U' \ (W.A * cholesky(W.D).U')
@@ -91,3 +89,5 @@ end
 # implement one way to scale it.
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
 *(c::Real, a::WoodburyPDMat) = a * c
+*(c::Diagonal{T}, a::WoodburyPDMat) where {T<:Real} = c * Matrix(a)
+*(c1::Diagonal{T}, a::WoodburyPDMat, c2::Diagonal{T}) where {T} = c1 * Matrix(a) * c2

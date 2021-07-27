@@ -1,21 +1,24 @@
 name = "PDMatsExtras"
 uuid = "2c7acb1b-7338-470f-b38f-951d2bcb9193"
 authors = ["Invenia Technical Computing"]
-version = "2.5.1"
+version = "2.5.2"
 
 [deps]
 ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+ChainRulesTestUtils = "cdddcdb0-9152-4a09-a978-84456f9df70a"
+FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 SuiteSparse = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
+Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
-ChainRulesCore = "0.9.17, 0.10"
+ChainRulesCore = "1"
 Distributions = "0.23, 0.24"
 FiniteDifferences = "0.11, 0.12"
 PDMats = "0.9, 0.10, 0.11"
-Zygote = "0.5.5"
+Zygote = "0.4, 0.5, 0.6"
 julia = "1"
 
 [extras]

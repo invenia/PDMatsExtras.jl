@@ -1,5 +1,7 @@
+using Test
 using PDMatsExtras
 using ChainRulesCore
+using ChainRulesTestUtils
 using Distributions
 using FiniteDifferences
 using LinearAlgebra
@@ -33,6 +35,7 @@ const TEST_MATRICES = Dict(
     include("test_ad.jl")
 
     include("psd_mat.jl")
+    include("chainrules.jl")
     include("woodbury_pd_mat.jl")
     include("utils.jl")
 end
