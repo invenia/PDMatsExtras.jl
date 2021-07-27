@@ -50,22 +50,27 @@ LinearAlgebra.dot(A, B::WoodburyLike) = dot(A, WoodburyPDMat(B))
             ###
 
             primal = R * W
-            
             # Matrix Tangent
             T = rand_tangent(Matrix(primal))
+            res = ChainRulesCore.rrule(*, R, W)
             f_jvp = j′vp(ChainRulesTestUtils._fdm, x -> Matrix(*(x...)), T, (R, W))[1]
-            R̄ = dot(T, W')
-            W̄ = conj(R) * T
 
-            R̄ ≈ f_jvp[1]
-            (W.D * W.A' * W̄' + W.D * W.A' * W̄) ≈ f_jvp[2].A' # A transpose.
-            Diagonal(W.A' * (W̄) * W.A) ≈ f_jvp[2].D # D
-            Diagonal(W̄) ≈ f_jvp[2].S # S
+            # Expected
+            R̄ = ProjectTo(R)(dot(T, W'))
+            W̄ = ProjectTo(W)(conj(R) * T)
+
+            R̄_rrule = unthunk(res[2](T)[2])
+            W̄_rrule = unthunk(res[2](T)[3])
+
+            @test res[1] == primal
+            @test R̄_rrule ≈ f_jvp[1]
+            @test W̄_rrule.A ≈ f_jvp[2].A
+            @test W̄_rrule.D ≈ f_jvp[2].D
+            @test W̄_rrule.S ≈ f_jvp[2].S
 
             # Cannot get this to work. Here the T will be 
             # T = rand_tangent(primal::WoodburyPDMat) which breaks. 
             # test_rrule(*, 5.0, W)
-
         end
     end
 end

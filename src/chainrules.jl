@@ -5,7 +5,6 @@ function ChainRulesCore.rrule(
 ) where {T, TA, TD, TS}
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
-
     function times_pullback(ȳ::AbstractMatrix)
         Ȳ = unthunk(ȳ)
         Ā = dot(Ȳ, B)
@@ -39,8 +38,3 @@ function ChainRulesCore.ProjectTo(W::WoodburyPDMat)
     end
     return dW
 end
-
-
-
-
-
