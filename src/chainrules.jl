@@ -4,14 +4,9 @@ function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
     function times_pullback(ȳ::AbstractMatrix)
-        Ȳ = unthunk(ȳ)
-        Ā = dot(Ȳ, B)
-        B̄ = A' * Ȳ
-        return (
-           NoTangent(),
-           @thunk(project_A(Ā')),
-           @thunk(project_B(B̄)),
-        )
+        Ā = @thunk(project_A(dot(Ȳ, B)'))
+        B̄ = @thunk(project_B(A' * Ȳ))
+        return (NoTangent(), Ā, B̄)
     end
 
     function times_pullback(ȳ::Tangent{<:WoodburyPDMat})
