@@ -9,8 +9,7 @@ function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
         return (NoTangent(), Ā, B̄)
     end
 
-    function times_pullback(ȳ::Tangent{<:WoodburyPDMat})
-        Ȳ = unthunk(ȳ)
+    function times_pullback(Ȳ::Tangent{<:WoodburyPDMat})
         Ā = dot(Ȳ.A * Ȳ.D * Ȳ.A' + Ȳ.S, B)
         B̄ = Ȳ.A * (A' * Ȳ.D) * Ȳ.A' + A' * Ȳ.S
         return (
