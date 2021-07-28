@@ -3,7 +3,7 @@
 function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
-    function times_pullback(ȳ::AbstractMatrix)
+    function times_pullback(Ȳ::AbstractMatrix)
         Ā = @thunk(project_A(dot(Ȳ, B)'))
         B̄ = @thunk(project_B(A' * Ȳ))
         return (NoTangent(), Ā, B̄)
