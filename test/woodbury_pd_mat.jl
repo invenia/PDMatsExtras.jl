@@ -48,22 +48,6 @@
         @test c * W == W * c
         @test c * W_dense ≈ c * W atol=1e-6
         @test (c * W) isa WoodburyPDMat
-
-        c = Diagonal(rand(4,))
-        @test c * W_dense ≈ c * W atol=1e-6
-        @test (c * W) isa Matrix
-        @test Matrix(W_dense) * c ≈ W * c atol=1e-6
-        @test (W * c) isa Matrix
-
-        c1 = Diagonal(rand(4,))
-        c2 = Diagonal(rand(4,))
-        c_neg = Diagonal([1,2,-2,3])
-        @test c1 * W * c2 ≈ c1 * W_dense * c2
-        @test (c1 * W * c2) isa Matrix
-
-        c = rand(4,4)
-        @test (c * W_dense) ≈ c * W
-
     end
 
     @testset "MvNormal logpdf" begin
