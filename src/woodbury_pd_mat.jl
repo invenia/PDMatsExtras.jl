@@ -89,5 +89,3 @@ end
 # implement one way to scale it.
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
 *(c::Real, a::WoodburyPDMat) = a * c
-*(c::Diagonal{T}, a::WoodburyPDMat) where {T<:Real} = c * Matrix(a)
-*(a::WoodburyPDMat, c::Diagonal{T}) where {T<:Real} = Matrix(a) * c

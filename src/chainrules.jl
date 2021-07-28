@@ -1,8 +1,6 @@
 @non_differentiable validate_woodbury_arguments(A, D, S)
 
-function ChainRulesCore.rrule(
-    ::typeof(*), A::Real, B::WoodburyPDMat{T, TA, TD, TS}
-) where {T, TA, TD, TS}
+function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
     function times_pullback(ȳ::AbstractMatrix)
