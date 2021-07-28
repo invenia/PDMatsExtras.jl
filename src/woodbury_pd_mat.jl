@@ -90,4 +90,4 @@ end
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
 *(c::Real, a::WoodburyPDMat) = a * c
 *(c::Diagonal{T}, a::WoodburyPDMat) where {T<:Real} = c * Matrix(a)
-*(c1::Diagonal{T}, a::WoodburyPDMat, c2::Diagonal{T}) where {T} = c1 * Matrix(a) * c2
+*(a::WoodburyPDMat, c::Diagonal{T}) where {T<:Real} = Matrix(a) * c
