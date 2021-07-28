@@ -32,6 +32,12 @@ struct WoodburyPDMat{
     end
 end
 
+function WoodburyPDMat(
+    A::AbstractMatrix{T}, D::AbstractVector{T}, S::AbstractVector{T},
+) where {T<:Real}
+    return WoodburyPDMat(A, Diagonal(D), Diagonal(S))
+end
+
 WoodburyPDMat{T, TA, TD, TS}(vals...) where {T, TA, TD, TS} = WoodburyPDMat(vals...)
 
 PDMats.dim(W::WoodburyPDMat) = size(W.A, 1)
