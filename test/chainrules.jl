@@ -45,7 +45,7 @@ LinearAlgebra.dot(A, B::WoodburyLike) = dot(A, WoodburyPDMat(B))
         test_rrule(*, rand(4,4), W)
     end
 
-    @testset "*(Real-Woodbury" begin
+    @testset "*(Real, Woodbury)" begin
         @testset "Matrix Tangent" begin
             ###
 
