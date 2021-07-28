@@ -7,6 +7,10 @@
     W = WoodburyPDMat(A, D, S)
     W_dense = PDMat(Symmetric(Matrix(W)))
 
+    @testset "Valid constructors" begin
+        @test W == typeof(W)(W.A, W.D, W.S)
+    end
+
     @testset "invalid constructors error" begin
         @test_throws ArgumentError WoodburyPDMat(randn(5, 2), D, S)
         @test_throws ArgumentError WoodburyPDMat(randn(4, 3), D, S)
