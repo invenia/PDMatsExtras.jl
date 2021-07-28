@@ -62,7 +62,7 @@
         @test (c1 * W * c2) isa Matrix
 
         c = rand(4,4)
-        @test (c1 * W_dense) ≈ c * W
+        @test (c * W_dense) ≈ c * W
 
     end
 
