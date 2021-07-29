@@ -1,23 +1,22 @@
 @non_differentiable validate_woodbury_arguments(A, D, S)
 
+function _times_pullback(Ȳ::AbstractMatrix, A, B, proj)
+    #Ā = @thunk(proj[:A](dot(Ȳ, B)'))
+    #B̄ = @thunk(proj[:B](A' * Ȳ))
+    Ā = dot(Ȳ, B)'
+    B̄ = A' * Ȳ
+    return (NoTangent(), Ā, B̄)
+end
+_times_pullback(ȳ::AbstractThunk, A, B, proj) = _times_pullback(unthunk(ȳ), A, B, proj)
+function _times_pullback(Ȳ::Tangent{<:WoodburyPDMat}, A, B, proj)
+    W = WoodburyPDMat(Ȳ.A, Ȳ.D, Ȳ.S)
+    return _times_pullback(W, A, B, proj)
+end
+
 function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
-    function times_pullback(Ȳ::AbstractMatrix)
-        Ā = @thunk(project_A(dot(Ȳ, B)'))
-        B̄ = @thunk(project_B(A' * Ȳ))
-        return (NoTangent(), Ā, B̄)
-    end
-
-    function times_pullback(Ȳ::Tangent{<:WoodburyPDMat})
-        Ā = dot(Ȳ.A * Ȳ.D * Ȳ.A' + Ȳ.S, B)
-        B̄ = Ȳ.A * (A' * Ȳ.D) * Ȳ.A' + A' * Ȳ.S
-        return (
-           NoTangent(),
-           @thunk(project_A(Ā')),
-           @thunk(project_B(B̄)),
-        )
-    end
+    times_pullback(ȳ) = _times_pullback(ȳ, A, B, (;A=project_A, B=project_B))
     return A * B, times_pullback
 end
 
