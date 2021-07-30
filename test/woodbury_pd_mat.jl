@@ -49,13 +49,6 @@
         @test c * W_dense ≈ c * W atol=1e-6
         @test (c * W) isa WoodburyPDMat
 
-        c = Diagonal(rand(4,))
-        @test c * W_dense ≈ c * W atol=1e-6
-        @test (c * W) isa Matrix
-
-        @test Matrix(W_dense) * c ≈ W * c atol=1e-6
-        @test (W * c) isa Matrix
-
     end
 
     @testset "MvNormal logpdf" begin
