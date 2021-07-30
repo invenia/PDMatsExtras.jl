@@ -71,6 +71,27 @@ LinearAlgebra.dot(A, B::WoodburyLike) = dot(A, WoodburyPDMat(B))
             # Cannot get this to work. Here the T will be 
             # T = rand_tangent(primal::WoodburyPDMat) which breaks. 
             # test_rrule(*, 5.0, W)
+
+            #####################################################################################################################
+
+            primal = R * W
+
+            # Generate the Tangent as ChainRulesTestUtils would do
+            ∂primal = rand_tangent(Random.GLOBAL_RNG, collect(primal))
+            T = ProjectTo(primal)(∂primal)
+      
+            f_jvp = j′vp(ChainRulesTestUtils._fdm, x -> (*(x...)), T, (R, W))[1]
+
+            # Expected
+            R̄ = ProjectTo(R)(dot(∂primal, W'))
+            W̄ = ProjectTo(W)(conj(R) * ∂primal)
+
+            @test res[1] == primal
+            @test R̄ ≈ f_jvp[1]
+            @test W̄.A ≈ f_jvp[2].A
+            @test W̄.D ≈ f_jvp[2].D
+            @test W̄.S ≈ f_jvp[2].S
+
         end
     end
 end
