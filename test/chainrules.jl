@@ -32,12 +32,14 @@
         # We can't test test_rrule(*, R, W; output_tangent = rand(size(W)...)) i.e. with a Matrix because
         # FD requires the primal and tangent to be the same size. However, we can just call FD directly and overload
         # the primal computation to return a Matrix:
-        res, pb = ChainRulesCore.rrule(*, R, W)
-        output_tangent = rand(size(W)...)
-        f_jvp = j′vp(ChainRulesTestUtils._fdm, x -> Matrix(*(x...)), output_tangent, (R, W))[1]
-        unthunk(pb(output_tangent)[3]).A ≈ f_jvp[2].A
-        unthunk(pb(output_tangent)[3]).D ≈ f_jvp[2].D
-        unthunk(pb(output_tangent)[3]).S ≈ f_jvp[2].S
-        unthunk(pb(output_tangent)[2]) ≈ f_jvp[1]
+        @testset "Matrix CoTangent" begin
+            res, pb = ChainRulesCore.rrule(*, R, W)
+            output_tangent = rand(size(W)...)
+            f_jvp = j′vp(ChainRulesTestUtils._fdm, x -> Matrix(*(x...)), output_tangent, (R, W))[1]
+            @test unthunk(pb(output_tangent)[3]).A ≈ f_jvp[2].A
+            @test unthunk(pb(output_tangent)[3]).D ≈ f_jvp[2].D
+            @test unthunk(pb(output_tangent)[3]).S ≈ f_jvp[2].S
+            @test unthunk(pb(output_tangent)[2]) ≈ f_jvp[1]
+        end
     end
 end
