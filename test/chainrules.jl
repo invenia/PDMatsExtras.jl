@@ -6,7 +6,11 @@
 
     @testset "Constructors" begin
         test_rrule(WoodburyPDMat, W.A, W.D, W.S)
-        test_rrule(WoodburyPDMat, W.A, W.D, W.S; output_tangent=Tangent{WoodburyPDMat}(; A = rand(4,2), D = Diagonal(rand(2,)), S = Diagonal(rand(4,))))
+        # This is a gradient. Should be able to deal with negative elements
+        test_rrule(WoodburyPDMat, W.A, W.D, W.S;
+            output_tangent=Tangent{WoodburyPDMat}(;
+            A = rand(4,2), D = Diagonal(-1 * rand(2,)), S = Diagonal(-1 * rand(4,)))
+        )
     end
 
     @testset "*(Matrix-Woodbury)" begin
