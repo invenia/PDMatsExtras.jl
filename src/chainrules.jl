@@ -2,23 +2,29 @@
 
 # Rule for Woodbury * Real. 
 # Ignoring Complex version for now. 
-# NOTE: # Can't use Tangent{WoodburyPDMat} here. ChainRules is fine, but Zygote has issues
+# NOTE: # Can't use Tangent{WoodburyPDMat} here. ChainRules is fine, but Zygote has issues and passes around Tangent{Any}
 
 function ChainRulesCore.rrule(::typeof(*), A::WoodburyPDMat, B::Real)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
-    times_pullback(ȳ) = _times_pullback(ȳ, A, B, (;A=project_A, B=project_B))
-    return A * B, times_pullback
+    primal = A * B
+    times_pullback(ȳ) = _times_pullback(ȳ, primal, A, B, (;A=project_A, B=project_B))
+    return primal, times_pullback
 end
 
 function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat, )
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
-    times_pullback(ȳ) = _times_pullback(ȳ, A, B, (;A=project_A, B=project_B))
-    return A * B, times_pullback
+    primal = A * B
+    times_pullback(ȳ) = _times_pullback(ȳ, primal, A, B, (;A=project_A, B=project_B))
+    return primal, times_pullback
 end
 
-_times_pullback(ȳ::AbstractThunk, A, B, proj) = _times_pullback(unthunk(ȳ), A, B, proj)
+_times_pullback(ȳ::AbstractThunk, primal, A, B, proj) = _times_pullback(unthunk(ȳ), primal, A, B, proj)
+# If the cotangent is a Matrix we first need to project down, otherwise ignore
+_times_pullback(Ȳ::AbstractMatrix, primal, A, B, proj) = _times_pullback(ProjectTo(primal)(Ȳ), A, B, proj)
+_times_pullback(ȳ::Tangent, primal, A, B, proj) = _times_pullback(ȳ, A, B, proj)
+
 function _times_pullback(Ȳ::Tangent, A::T, B::Real, proj)  where {T<:WoodburyPDMat}
     Ā = @thunk proj.A(Tangent{WoodburyPDMat}(; A = Ȳ.A, D = Ȳ.D * B', S = Ȳ.S * B'))
     B̄ = @thunk proj.B(dot(Ȳ.D, A.D) + dot(Ȳ.S, A.S))
