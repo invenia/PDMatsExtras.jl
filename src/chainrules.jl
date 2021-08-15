@@ -2,6 +2,7 @@
 
 # Rule for Woodbury * Real. 
 # Ignoring Complex version for now. 
+# NOTE: # Can't use Tangent{WoodburyPDMat} here. ChainRules is fine, but Zygote has issues
 
 function ChainRulesCore.rrule(::typeof(*), A::WoodburyPDMat, B::Real)
     project_A = ProjectTo(A)
@@ -18,13 +19,13 @@ function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat, )
 end
 
 _times_pullback(ȳ::AbstractThunk, A, B, proj) = _times_pullback(unthunk(ȳ), A, B, proj)
-function _times_pullback(Ȳ::Tangent{T}, A::T, B::Real, proj) where {T<:WoodburyPDMat}
+function _times_pullback(Ȳ::Tangent, A::T, B::Real, proj)  where {T<:WoodburyPDMat}
     Ā = @thunk proj.A(Tangent{WoodburyPDMat}(; A = Ȳ.A, D = Ȳ.D * B', S = Ȳ.S * B'))
     B̄ = @thunk proj.B(dot(Ȳ.D, A.D) + dot(Ȳ.S, A.S))
     return (NoTangent(), Ā, B̄)
 end
 
-function _times_pullback(Ȳ::Tangent{T}, A::Real, B::T, proj) where {T<:WoodburyPDMat} 
+function _times_pullback(Ȳ::Tangent, A::Real, B::T, proj) where {T<:WoodburyPDMat}
     Ā = @thunk proj.A(dot(Ȳ.D, B.D) + dot(Ȳ.S, B.S))
     B̄ = @thunk proj.B(Tangent{WoodburyPDMat}(; A = Ȳ.A, D = Ȳ.D * A, S = Ȳ.S * A))
     return (NoTangent(), Ā, B̄)
