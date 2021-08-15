@@ -48,7 +48,6 @@
         @test c * W == W * c
         @test c * W_dense ≈ c * W atol=1e-6
         @test (c * W) isa WoodburyPDMat
-
     end
 
     @testset "MvNormal logpdf" begin
