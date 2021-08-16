@@ -19,6 +19,7 @@
         )
     end
 
+    # The rrules already in ChainRules are sufficient for these to work. We just test an example here.
     @testset "*(Matrix-Woodbury)" begin
         test_rrule(*, Dmat, W)
         test_rrule(*, W, Dmat)
