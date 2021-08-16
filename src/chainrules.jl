@@ -2,8 +2,6 @@
 
 # Rule for Woodbury * Real. 
 # Ignoring Complex version for now. 
-# NOTE: # Can't use Tangent{WoodburyPDMat} here. ChainRules is fine, but Zygote has issues and passes around Tangent{Any}
-
 function ChainRulesCore.rrule(::typeof(*), A::WoodburyPDMat, B::Real)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
@@ -54,6 +52,14 @@ function ChainRulesCore.ProjectTo(W::T) where {T<:WoodburyPDMat}
     ChainRulesCore.ProjectTo{T}(; fields...)
 end
 
+#
+# Project the differential onto the Tangent{WoodburyPDMat}.
+# This essentially computes the pullbacks for the components of the Woodbury
+# i.e. from the definition: W = ADA' + S
+# dW = ADdA' + AdDA' + dS
+# => Ā = 2ADW̄, D̄=AW̄A', S̄ = W̄
+# More precise formulation available e.g. here:
+# https://people.maths.ox.ac.uk/gilesm/files/NA-08-01.pdf
 function (project::ProjectTo{T})(X̄::AbstractMatrix) where {T<:WoodburyPDMat}
     Ā = ProjectTo(project.A)((X̄ + X̄') * (project.A * project.D))
     D̄ = ProjectTo(project.D)(project.A' * (X̄) * project.A)
