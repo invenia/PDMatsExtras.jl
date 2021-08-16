@@ -46,7 +46,7 @@ function ChainRulesCore.rrule(
     ) where  {T<:WoodburyPDMat}
     return WoodburyPDMat(A, D, S), X̄ -> WoodburyPDMat_pullback(X̄, A, D, S)
 end
-WoodburyPDMat_pullback(X̄::Tangent, A, D, S) = (X̄ = (unthunk(X̄); return (NoTangent(), X̄.A, X̄.D, X̄.S)))
+WoodburyPDMat_pullback(X̄::Tangent, A, D, S) = (NoTangent(), X̄.A, X̄.D, X̄.S)
 WoodburyPDMat_pullback(X̄::AbstractThunk, A, D, S) = WoodburyPDMat_pullback(unthunk(X̄), A, D, S)
 
 function ChainRulesCore.ProjectTo(W::T) where {T<:WoodburyPDMat}
