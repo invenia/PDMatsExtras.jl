@@ -11,6 +11,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 SuiteSparse = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [compat]
+ChainRules = "1"
 ChainRulesCore = "1"
 ChainRulesTestUtils = "1"
 Distributions = "0.23, 0.24, 0.25"
@@ -20,6 +21,7 @@ Zygote = "0.6"
 julia = "1"
 
 [extras]
+ChainRules = "082447d4-558c-5d27-93f4-14fc19e9eca2"
 ChainRulesTestUtils = "cdddcdb0-9152-4a09-a978-84456f9df70a"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
@@ -29,4 +31,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["ChainRulesTestUtils", "Distributions", "FiniteDifferences", "Random", "SuiteSparse", "Test", "Zygote"]
+test = ["ChainRules", "ChainRulesTestUtils", "Distributions", "FiniteDifferences", "Random", "SuiteSparse", "Test", "Zygote"]
