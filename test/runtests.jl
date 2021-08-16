@@ -1,4 +1,5 @@
 using PDMatsExtras
+using ChainRules
 using ChainRulesCore
 using ChainRulesTestUtils
 using Distributions
