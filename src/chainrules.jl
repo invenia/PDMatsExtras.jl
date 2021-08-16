@@ -12,7 +12,7 @@ function ChainRulesCore.rrule(::typeof(*), A::WoodburyPDMat, B::Real)
     return primal, times_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat, )
+function ChainRulesCore.rrule(::typeof(*), A::Real, B::WoodburyPDMat)
     project_A = ProjectTo(A)
     project_B = ProjectTo(B)
     primal = A * B
