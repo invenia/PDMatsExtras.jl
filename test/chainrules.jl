@@ -12,7 +12,7 @@
 
     @testset "Constructors" begin
         test_rrule(WoodburyPDMat, W.A, W.D, W.S)
-        # This is a gradient. Should be able to deal with negative elements
+        # This is a gradient, should be able to deal with negative elements (does not have to be PSD like Woodbury itself)
         test_rrule(WoodburyPDMat, W.A, W.D, W.S;
             output_tangent=Tangent{WoodburyPDMat}(;
             A = rand(4,2), D = Diagonal(-1 * rand(2,)), S = Diagonal(-1 * rand(4,)))
