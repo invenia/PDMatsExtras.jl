@@ -63,7 +63,7 @@
             @test subW.A == W.A[[1, 3], :]
             @test subW.D == W.D
             @test subW.S == Diagonal(W.S.diag[[1, 3]])
-            @test Matrix(subW) == W_dense[[1, 3], [1, 3]]
+            @test Matrix(subW) ≈ W_dense[[1, 3], [1, 3]]
         end
     end
 end
