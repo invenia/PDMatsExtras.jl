@@ -50,6 +50,13 @@
         @test (c * W) isa WoodburyPDMat
     end
 
+    @testset "diagonal quad" begin
+        σ = Diagonal(rand(4,))
+        @test quad(W, σ) ≈ σ * W_dense * σ atol=1e-6
+        @test quad(W, σ) ≈ σ * W * σ atol=1e-6
+        @test quad(W, σ) isa WoodburyPDMat
+    end
+
     @testset "MvNormal logpdf" begin
         m = randn(size(A, 1))
         @test logpdf(MvNormal(m, W), x) ≈ logpdf(MvNormal(m, Symmetric(Matrix(W))), x)
