@@ -91,7 +91,7 @@ end
 
 # NOTE: the parameterisation to scale up the Woodbury matrix is not unique. Here we
 # implement one way to scale it.
-PDMats.Xt_A_X(a::WoodburyPDMat, x::Diagonal) = WoodburyPDMat(x * a.A,  a.D, x' * a.S * x)
+PDMats.Xt_A_X(a::WoodburyPDMat, x::Diagonal) = WoodburyPDMat(x * a.A,  a.D, x * a.S * x)
 PDMats.X_A_Xt(a::WoodburyPDMat, x::Diagonal) = PDMats.Xt_A_X(a, x)
 *(a::WoodburyPDMat, c::Real) = WoodburyPDMat(a.A, a.D * c, a.S * c)
 *(c::Real, a::WoodburyPDMat) = a * c
