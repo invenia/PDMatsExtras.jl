@@ -54,6 +54,7 @@
     @testset "$f X::Diagonal" for f in [Xt_A_X, X_A_Xt]
         @test f(W, σ) ≈ σ * W_dense * σ atol=1e-6
         @test f(W, σ) ≈ σ * W * σ atol=1e-6
+        @test Matrix(f(W, σ)) ≈ f(W_dense, σ) atol=1e-6
         @test f(W, σ) isa WoodburyPDMat
     end
 
