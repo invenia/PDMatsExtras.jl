@@ -2,6 +2,7 @@
     A = randn(4, 2)
     D = Diagonal(randn(2).^2 .+ 1)
     S = Diagonal(randn(4).^2 .+ 1)
+    σ = Diagonal(rand(4,))
     x = randn(size(A, 1))
 
     W = WoodburyPDMat(A, D, S)
@@ -50,11 +51,10 @@
         @test (c * W) isa WoodburyPDMat
     end
 
-    @testset "diagonal quad" begin
-        σ = Diagonal(rand(4,))
-        @test quad(W, σ) ≈ σ * W_dense * σ atol=1e-6
-        @test quad(W, σ) ≈ σ * W * σ atol=1e-6
-        @test quad(W, σ) isa WoodburyPDMat
+    @testset "$f X::Diagonal" for f in [Xt_A_X, X_A_Xt]
+        @test f(W, σ) ≈ σ * W_dense * σ atol=1e-6
+        @test f(W, σ) ≈ σ * W * σ atol=1e-6
+        @test f(W, σ) isa WoodburyPDMat
     end
 
     @testset "MvNormal logpdf" begin
