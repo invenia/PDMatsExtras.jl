@@ -65,6 +65,7 @@ end
         @test isa(Σ, Matrix{Float64})
         @test length(μ) == d
         @test size(Σ) == (d, d)
+        @test size(Σ, 1) == d 
         @test var(g)     ≈ diag(Σ)
         @test entropy(g) ≈ 0.5 * logdet(2π * ℯ * Σ)
         ldcov = logdetcov(g)
