@@ -103,6 +103,7 @@ Overwrite `r` with the value of the quadratic form defined by `inv(a)` applied c
 """
 PDMats.invquad!(r::AbstractArray, a::PSDMat, x::StridedMatrix) = PDMats.colwise_dot!(r, x, a.mat \ x)
 
+Base.size(a::PSDMat) = (a.dim, a.dim)
 
 ### tri products
 

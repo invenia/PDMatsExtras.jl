@@ -22,6 +22,9 @@
     @testset "Basic functionality" begin
         # Checks getindex works.
         @test all(isapprox.(W, W_dense))
+        @test size(W) == size(W_dense)
+        @test size(W, 1) == size(W_dense, 1)
+        @test size(W, 2) == size(W_dense, 2)
     end
 
     @testset "unwhiten!" begin
@@ -81,4 +84,5 @@
             return logpdf(Distributions.GenericMvTDist(α, m, W), x)
         end
     end
+
 end
