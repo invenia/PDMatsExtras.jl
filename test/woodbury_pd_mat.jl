@@ -31,6 +31,10 @@
             @test W[:, i] ≈ W_dense[:, i]
         end
 
+        @test W[:] ≈ W_dense[:]
+
+        @test collect(W) ≈ collect(W_dense)
+
         @test size(W) == size(W_dense)
         @test size(W, 1) == size(W_dense, 1)
         @test size(W, 2) == size(W_dense, 2)
