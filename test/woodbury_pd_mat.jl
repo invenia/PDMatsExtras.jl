@@ -22,6 +22,15 @@
     @testset "Basic functionality" begin
         # Checks getindex works.
         @test all(isapprox.(W, W_dense))
+        @test all((W[i] ≈ W_dense[i] for i in 1:length(W)))
+
+        for i in size(W, 1)
+            @test W[i, :] ≈ W_dense[i, :]
+        end
+        for i in size(W, 2)
+            @test W[:, i] ≈ W_dense[:, i]
+        end
+
         @test size(W) == size(W_dense)
         @test size(W, 1) == size(W_dense, 1)
         @test size(W, 2) == size(W_dense, 2)
