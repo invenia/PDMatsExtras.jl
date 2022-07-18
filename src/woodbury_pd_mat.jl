@@ -47,6 +47,8 @@ Base.Matrix(W::WoodburyPDMat) = W.A * W.D * W.A' + W.S
 Base.Array(W::WoodburyPDMat) = Matrix(W)
 
 function Base.getindex(W::WoodburyPDMat, i1::Integer, i2::Integer)
+    # Construct only the element we request. This avoids the likes of:
+    #   https://github.com/invenia/PDMatsExtras.jl/issues/30
     return @views W.A[i1, :]' * W.D * W.A[i2, :] + W.S[i1, i2]
 end
 
