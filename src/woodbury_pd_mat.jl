@@ -42,10 +42,28 @@ WoodburyPDMat{T, TA, TD, TS}(vals...) where {T, TA, TD, TS} = WoodburyPDMat(vals
 
 PDMats.dim(W::WoodburyPDMat) = size(W.A, 1)
 
-# Convesion method. Primarily useful for testing purposes.
+# Conversion method. Primarily useful for testing purposes.
 Base.Matrix(W::WoodburyPDMat) = W.A * W.D * W.A' + W.S
+Base.Array(W::WoodburyPDMat) = Matrix(W)
+Base.collect(W::WoodburyPDMat) = Matrix(W)
 
-Base.getindex(W::WoodburyPDMat, inds...) = getindex(Matrix(W), inds...)
+function Base.getindex(W::WoodburyPDMat, i1::Integer, i2::Integer)
+    # Construct only the element we request. This avoids the likes of:
+    #   https://github.com/invenia/PDMatsExtras.jl/issues/30
+    return @views W.A[i1, :]' * W.D * W.A[i2, :] + W.S[i1, i2]
+end
+
+function _get_row_or_col(W::WoodburyPDMat, i::Integer)
+    # Get a vector representing row i.
+    # This is identical to column i, since `W` is always symmetric.
+    result = W.A * W.D * @view W.A[i, :]
+    result .+= @view W.S[i, :]
+    return result
+end
+
+Base.getindex(W::WoodburyPDMat, i1::Integer, ::Colon) = _get_row_or_col(W, i1)
+Base.getindex(W::WoodburyPDMat, ::Colon, i2::Integer) = _get_row_or_col(W, i2)
+Base.getindex(W::WoodburyPDMat, ::Colon) = vec(Matrix(W))
 
 function validate_woodbury_arguments(A, D, S)
     if size(A, 1) != size(S, 1)
