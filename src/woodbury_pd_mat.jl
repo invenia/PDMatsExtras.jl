@@ -42,10 +42,13 @@ WoodburyPDMat{T, TA, TD, TS}(vals...) where {T, TA, TD, TS} = WoodburyPDMat(vals
 
 PDMats.dim(W::WoodburyPDMat) = size(W.A, 1)
 
-# Convesion method. Primarily useful for testing purposes.
+# Conversion method. Primarily useful for testing purposes.
 Base.Matrix(W::WoodburyPDMat) = W.A * W.D * W.A' + W.S
+Base.Array(W::WoodburyPDMat) = Matrix(W)
 
-Base.getindex(W::WoodburyPDMat, inds...) = getindex(Matrix(W), inds...)
+function Base.getindex(W::WoodburyPDMat, i1::Integer, i2::Integer)
+    return @views W.A[i1, :]' * W.D * W.A[i2, :] + W.S[i1, i2]
+end
 
 function validate_woodbury_arguments(A, D, S)
     if size(A, 1) != size(S, 1)
