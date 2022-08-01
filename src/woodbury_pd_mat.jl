@@ -105,6 +105,12 @@ function PDMats.unwhiten!(r::DenseVecOrMat, W::WoodburyPDMat{<:Real}, x::DenseVe
     return unwhiten!(r, PDMat(Symmetric(Matrix(W))), x)
 end
 
+# This just similarly densifies
+PDMats.whiten(W::WoodburyPDMat, x::AbstractVecOrMat) = PDMats.whiten(PDMat(Symmetric(Matrix(W))), x)
+PDMats.whiten!(W::WoodburyPDMat, x::AbstractVecOrMat) = PDMats.whiten!(PDMat(Symmetric(Matrix(W))), x)
+PDMats.whiten!(r::AbstractVecOrMat, W::WoodburyPDMat, x::AbstractVecOrMat) = PDMats.whiten!(r, PDMat(Symmetric(Matrix(W))), x)
+
+
 Base.size(a::WoodburyPDMat) = (size(a.A)[1], size(a.A)[1])
 
 
