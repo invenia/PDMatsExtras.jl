@@ -50,6 +50,13 @@
 
     @testset "unwhiten!" begin
         @test PDMats.unwhiten!(similar(x), W, x) ≈ PDMats.unwhiten!(similar(x), W_dense, x)
+        
+    end
+
+    @testset "whiten" begin
+        @test PDMats.whiten(W, x) ≈ PDMats.whiten(W_dense, x)
+        @test PDMats.whiten!(similar(x), W, x) ≈ PDMats.whiten!(similar(x), W_dense, x)
+        @test PDMats.whiten!(W, x) ≈ PDMats.whiten!(W_dense, x)
     end
 
     @testset "logdet" begin
