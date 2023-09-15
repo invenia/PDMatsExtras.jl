@@ -76,13 +76,17 @@ LinearAlgebra.kron(a::PSDMat, b::AbstractPDMat) = PSDMat(kron(a.mat, Matrix(b)))
 function PDMats.whiten!(r::StridedVecOrMat, a::PSDMat, x::StridedVecOrMat)
     cf = a.chol.U
     v = PDMats._rcopy!(r, x)
-    istriu(cf) ? ldiv!(transpose(cf), v) : ldiv!(cf, v)
+    view_v = v isa StridedVector ? view(v, a.chol.p) : view(v, a.chol.p, :)
+    istriu(cf) ? ldiv!(transpose(cf), view_v) : ldiv!(cf, view_v)
+    return v
 end
 
 function PDMats.unwhiten!(r::StridedVecOrMat, a::PSDMat, x::StridedVecOrMat)
     cf = a.chol.U
     v = PDMats._rcopy!(r, x)
-    istriu(cf) ? lmul!(transpose(cf), v) : lmul!(cf, v)
+    view_v = v isa StridedVector ? view(v, a.chol.p) : view(v, a.chol.p, :)
+    istriu(cf) ? lmul!(transpose(cf), view_v) : lmul!(cf, view_v)
+    return v
 end
 
 
