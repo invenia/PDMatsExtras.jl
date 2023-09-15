@@ -69,6 +69,20 @@ end
         @test whiten!(  similar(x), pd, x) ≈ whiten!(  similar(x), psd, x)
         @test unwhiten!(similar(x), pd, x) ≈ unwhiten!(similar(x), psd, x)
     end
+
+    @testset "Constructing from Matrix{<:Integer} works" begin
+
+        m = [
+            1   0
+            0   1
+        ]
+
+        for type in (UInt8, Int8, UInt16, Int16, UInt32, Int32, UInt, Int)
+            @test PSDMat{Float64, Matrix{Float64}} == typeof(PSDMat(type.(m)))
+        end
+
+    end
+
 end
 
 @testset "Degenerate MvNormal" begin
