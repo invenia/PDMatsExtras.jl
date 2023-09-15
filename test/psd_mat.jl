@@ -48,6 +48,27 @@ end
         )
         pdtest_kron(C, C.mat, verbose)
     end
+
+    @testset "whiten! & unwhiten! respect permutation of CholeskyPivoted" begin
+
+        # test that whiten! & unwhiten! respect the permutation of CholeskyPivoted
+        mat = [
+            1. 0  0
+            0  3. 0
+            0  0  2.
+        ]
+        pd  = PDMat(mat)
+        psd = PSDMat(mat)
+        # psd.chol.p == [2, 3, 1]
+
+        x = ones(size(mat, 1))
+        @test whiten!(  similar(x), pd, x) ≈ whiten!(  similar(x), psd, x)
+        @test unwhiten!(similar(x), pd, x) ≈ unwhiten!(similar(x), psd, x)
+
+        x = ones(size(mat, 1), 5)
+        @test whiten!(  similar(x), pd, x) ≈ whiten!(  similar(x), psd, x)
+        @test unwhiten!(similar(x), pd, x) ≈ unwhiten!(similar(x), psd, x)
+    end
 end
 
 @testset "Degenerate MvNormal" begin
@@ -65,7 +86,7 @@ end
         @test isa(Σ, Matrix{Float64})
         @test length(μ) == d
         @test size(Σ) == (d, d)
-        @test size(Σ, 1) == d 
+        @test size(Σ, 1) == d
         @test var(g)     ≈ diag(Σ)
         @test entropy(g) ≈ 0.5 * logdet(2π * ℯ * Σ)
         ldcov = logdetcov(g)
