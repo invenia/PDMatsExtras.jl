@@ -18,7 +18,7 @@ end
     verbose = 1
     @testset "Positive definite" begin
         M = TEST_MATRICES["Positive definite"]
-        pivoted = cholesky(M, Val(true))
+        pivoted = cholesky(M, VERSION >= v"1.8.0-rc1" ? RowMaximum() : Val(true))
         C = PSDMat(M, pivoted)
         test_pdmat(
             C,
@@ -33,7 +33,7 @@ end
     @testset "Positive semi-definite" begin
         M = TEST_MATRICES["Positive semi-definite"]
         @test !isposdef(M)
-        pivoted = cholesky(M, Val(true); check=false)
+        pivoted = cholesky(M, VERSION >= v"1.8.0-rc1" ? RowMaximum() : Val(true); check=false)
         C = PSDMat(M, pivoted)
         test_pdmat(
             C,
