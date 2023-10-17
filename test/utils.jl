@@ -40,7 +40,7 @@
 
         @testset "PSDMat" begin
             SM = TEST_MATRICES["Positive semi-definite"]
-            pivoted = cholesky(SM, Val(true); check=false)
+            pivoted = cholesky(SM, VERSION >= v"1.8.0-rc1" ? RowMaximum() : Val(true); check=false)
             M = PSDMat(SM, pivoted)
             M_dense = Matrix(M)
 
