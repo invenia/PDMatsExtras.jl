@@ -24,7 +24,7 @@ struct PSDMat{T<:Real,S<:AbstractMatrix} <: AbstractPDMat{T}
 end
 
 function PSDMat(mat::AbstractMatrix, chol::CholType{T,S}) where {T,S}
-    d = size(mat, 1)
+    d = LinearAlgebra.checksquare(mat)
     size(chol, 1) == d ||
         throw(DimensionMismatch("Dimensions of mat and chol are inconsistent."))
     PSDMat{T, S}(d, convert(S, mat), chol)
