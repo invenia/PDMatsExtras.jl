@@ -23,11 +23,11 @@ struct PSDMat{T<:Real,S<:AbstractMatrix} <: AbstractPDMat{T}
     PSDMat{T,S}(m::AbstractMatrix{T},c::CholType{T,S}) where {T,S} = new{T, S}(m, c)
 end
 
-function PSDMat(mat::AbstractMatrix, chol::CholType)
+function PSDMat(mat::AbstractMatrix, chol::CholType{T,S}) where {T,S}
     d = LinearAlgebra.checksquare(mat)
     size(chol, 1) == d ||
         throw(DimensionMismatch("Dimensions of mat and chol are inconsistent."))
-    PSDMat{eltype(mat),typeof(mat)}(mat, chol)
+    PSDMat{T, S}(d, convert(S, mat), chol)
 end
 
 PSDMat(mat::Matrix) = PSDMat(mat, cholesky(mat, VERSION >= v"1.8.0-rc1" ? RowMaximum() : Val(true); check=false))
