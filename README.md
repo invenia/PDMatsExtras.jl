@@ -22,7 +22,7 @@ When that is resolved the matrix defined here may well move elsewhere, or cease 
 A Positive Semi-Definite Matrix.
 It still subtypes `AbstractPDMat`.
 It's not quite as nice to work with as a truly positive definite matrix, since the math doesn't work out so well.
-But this is able to represent all covariances -- which must be positive *semi*-definate.
+But this is able to represent all covariances -- which must be positive *semi*-definite.
 You might not like the consequences,
 
 ```julia
